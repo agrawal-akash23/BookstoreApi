@@ -1,6 +1,6 @@
 # BookstoreApi — EF Core + ASP.NET Core Web API
 
-Project 4 of 8 in a .NET learning series. A RESTful Bookstore API backed by
+A RESTful Bookstore API backed by
 a real database using Entity Framework Core. Demonstrates code-first migrations,
 LINQ queries, navigation properties, raw SQL, and seed data.
 
@@ -29,7 +29,7 @@ Prerequisites: [.NET 8 SDK](https://dotnet.microsoft.com/download)
 git clone https://github.com/YOUR_USERNAME/BookstoreApi
 cd BookstoreApi
 dotnet ef database update    # creates bookstore.db + runs seed data
-dotnet run                   # starts on https://localhost:5001
+dotnet run                   # starts on https://localhost:
 ```
 
 Open **https://localhost:5001/swagger** to explore all endpoints interactively.
@@ -77,11 +77,3 @@ after `dotnet ef database update`.
 1. **LINQ** (everyday work) — type-safe, compiler-checked, no SQL injection risk
 2. **`FromSqlRaw`** (raw SQL) — parameterised, still maps to C# objects via EF Core
 3. **`ExecuteSqlRaw`** (bulk operations) — returns row count, not entities
-
-## Next: Project 5 — Repository pattern + SOLID
-
-Project 5 refactors this codebase to add the Repository pattern, removing direct
-`DbContext` calls from controllers and making the code testable with unit tests.
-
----
-*Part of a series building up to a full microservices housing management system.*
