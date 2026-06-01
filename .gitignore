@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#It's binary file that changes on every run, cause merge conflicts, and leaks local data.
+*.db
