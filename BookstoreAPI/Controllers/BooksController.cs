@@ -74,5 +74,45 @@ namespace BookstoreAPI.Controllers
                 "UPDATE Books SET Price = Price * {0}", 1 - (percent / 100));
             return Ok(new { message = "Discount applied", rowsUpdated = rows });
         }
+
+        // GET /api/books/price-range?min=20&max=45
+        // Uses a parameterised raw SQL query - the SQLite equivalent of a stored proc
+        [HttpGet("price-range")]
+        public async Task<ActionResult<List<Book>>> GetByPriceRange(
+            [FromQuery] decimal min = 0,
+            [FromQuery] decimal max = 100)
+        {
+            // Input validation — always validate parameters before using them in SQL
+            if (min < 0 || max < 0)
+                return BadRequest(new { message = "Price values cannot be negative." });
+
+            if (min > max)
+                return BadRequest(new { message = $"min ({min}) cannot be greater than max ({max})." });
+
+            // {0} = min parameter, {1} = max parameter
+            // EF Core turns these into real SQL parameters — never string interpolation
+            var books = await _db.Books
+                .FromSqlRaw(@"
+            SELECT b.Id, b.Title, b.Price, b.AuthorId
+            FROM Books b
+            WHERE b.Price BETWEEN {0} AND {1}
+            ORDER BY b.Price ASC", min, max)
+                .ToListAsync();
+
+            // Return 200 even with empty results — empty list is valid, not an error
+            return Ok(books);
+        }
+
+        // Bonus: GET /api/books/affordable
+        // Uses the view we created — demonstrates querying a view via FromSqlRaw
+        [HttpGet("affordable")]
+        public async Task<ActionResult<List<Book>>> GetAffordable()
+        {
+            var books = await _db.Books
+                .FromSqlRaw("SELECT Id, Title, Price, AuthorId FROM vw_AffordableBooks")
+                .ToListAsync();
+
+            return Ok(books);
+        }
     }
 }
